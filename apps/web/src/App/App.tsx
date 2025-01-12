@@ -21,7 +21,7 @@ function App(): ReactElement {
 
   let walletConnectProjectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID;
   if (!walletConnectProjectId) {
-    walletConnectProjectId = "e2fef7cf17012eaba443b7cf615f7815";
+    walletConnectProjectId = "e7b04c22de006e0fc7cef5a00cb7fac9";
   }
 
   const walletManager = new WalletManager({

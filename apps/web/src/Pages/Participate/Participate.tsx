@@ -21,6 +21,30 @@ function Participate(): ReactElement {
   const [isRegisterVisible, setRegisterVisibility] = useState<boolean>(false);
   const [txnId, setTxnId] = useState<string>("");
   const [txnMsg, setTxnMsg] = useState<string>("");
+  const [isParticipating, setIsParticipating] = useState<boolean>(false);
+
+  useEffect(() => {
+    async function checkParticipationStatus() {
+      if (!activeAccount) return;
+
+      try {
+        const algodClient = voiStakingUtils.network.getAlgodClient();
+        const status = await algodClient.status().do();
+        const lastRound = status["last-round"];
+        const accountInfo = await algodClient
+          .accountInformation(activeAccount.address)
+          .do();
+        setIsParticipating(
+          !!accountInfo.participation &&
+            lastRound < (accountInfo.participation["vote-last-valid"] || 0)
+        );
+      } catch (e) {
+        showException(e);
+      }
+    }
+
+    checkParticipationStatus();
+  }, [activeAccount, showException]);
 
   async function deRegister() {
     if (!activeAccount) return;
@@ -32,12 +56,6 @@ function Participate(): ReactElement {
       const keyRegTxn =
         algosdk.makeKeyRegistrationTxnWithSuggestedParamsFromObject({
           from: activeAccount.address,
-          selectionKey: new Uint8Array(32),
-          stateProofKey: new Uint8Array(64),
-          voteKey: new Uint8Array(32),
-          voteFirst: 0,
-          voteLast: 0,
-          voteKeyDilution: 0,
           suggestedParams,
           note: new Uint8Array(Buffer.from("voix:uparticipate0")),
         });
@@ -62,6 +80,14 @@ function Participate(): ReactElement {
           <div>Account</div>
         </div>
         <div className="overview-body">
+          {activeAccount && (
+            <div className="participation-status">
+              <p>
+                Status:{" "}
+                {isParticipating ? "Participating" : "Not participating"}
+              </p>
+            </div>
+          )}
           <div className="overview-button-group">
             <Button
               variant={"outlined"}
@@ -74,22 +100,24 @@ function Participate(): ReactElement {
               Register
             </Button>
             {activeAccount ? (
-              <Register
-                show={isRegisterVisible}
-                onClose={() => {
-                  setRegisterVisibility(false);
-                }}
-                //accountData={accountData}
-                address={activeAccount.address}
-                onSuccess={(txnId: string) => {
-                  setTxnId(txnId);
-                  setTxnMsg("You have registered successfully.");
-                  setRegisterVisibility(false);
-                  dispatch(loadAccountData(activeAccount.address));
-                }}
-              ></Register>
+              <>
+                <Register
+                  show={isRegisterVisible}
+                  onClose={() => {
+                    setRegisterVisibility(false);
+                  }}
+                  //accountData={accountData}
+                  address={activeAccount.address}
+                  onSuccess={(txnId: string) => {
+                    setTxnId(txnId);
+                    setTxnMsg("You have registered successfully.");
+                    setRegisterVisibility(false);
+                    dispatch(loadAccountData(activeAccount.address));
+                  }}
+                ></Register>
+                <Button onClick={deRegister}>Deregister</Button>
+              </>
             ) : null}
-            {/*<Button onClick={deRegister}>Deregister</Button>*/}
           </div>
         </div>
       </div>
