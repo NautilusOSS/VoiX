@@ -45,17 +45,16 @@ import humanizeDuration from "humanize-duration";
 import { InfoTooltip } from "../../Components/InfoToolTip/InfoToolTip";
 import CopyText from "@/Components/Copy";
 import Register from "./Register/Register";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import WithdrawAll from "./WithdrawAll/WithdrawAll";
 import { useConfirm } from "material-ui-confirm";
 import { confirmationProps } from "@repo/theme";
 import { waitForConfirmation } from "@algorandfoundation/algokit-utils";
 import party from "party-js";
 
-
 function Overview(): ReactElement {
   const params = useParams<{ contractId: string }>();
-
+  const navigate = useNavigate();
   const { loading } = useSelector((state: RootState) => state.node);
   const { activeAccount, transactionSigner } = useWallet();
 
@@ -502,6 +501,14 @@ function Overview(): ReactElement {
                     <Button
                       className="button"
                       onClick={() => {
+                        navigate("/transfer");
+                      }}
+                    >
+                      Transfer
+                    </Button>
+                    <Button
+                      className="button"
+                      onClick={() => {
                         setDepositModalVisibility(true);
                       }}
                     >
@@ -842,9 +849,11 @@ function Overview(): ReactElement {
                           contractState
                         ) && (
                           <CopyText
-                            text={new CoreStaker(accountData).delegateAddress(
-                              contractState
-                            )!}
+                            text={
+                              new CoreStaker(accountData).delegateAddress(
+                                contractState
+                              )!
+                            }
                           />
                         )}
                       </div>

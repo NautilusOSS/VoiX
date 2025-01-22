@@ -156,10 +156,10 @@ function AppRouter(): ReactElement {
                             path="/withdraw"
                             element={<Withdraw></Withdraw>}
                           ></Route>
-                        <Route
-                          path="/transfer"
-                          element={<Transfer></Transfer>}
-                    ></Route>
+                          <Route
+                            path="/transfer"
+                            element={<Transfer></Transfer>}
+                          ></Route>
                           <Route
                             path="/delegate"
                             element={<Delegate></Delegate>}
