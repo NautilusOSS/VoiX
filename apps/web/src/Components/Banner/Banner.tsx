@@ -71,7 +71,7 @@ const Banner: React.FC<BannerProps> = (props) => {
         >
           MEXC
         </Button>
-        <Button
+        {/*<Button
           component={Link}
           className="button"
           href="https://www.coinstore.com/spot/VOIUSDT"
@@ -81,6 +81,7 @@ const Banner: React.FC<BannerProps> = (props) => {
         >
           Coinstore
         </Button>
+        */}
         <Button
           component={Link}
           className="button"
@@ -113,6 +114,17 @@ const Banner: React.FC<BannerProps> = (props) => {
           Staking Guide
         </Button>
         */}
+         <Button
+          component={Link}
+          className="button"
+          href="https://faucet.voirewards.com/"
+          target="_blank"
+          rel="noopener"
+          sx={{ color: "#fff", textDecoration: "none" }}
+        >
+          Voi Fountain
+        </Button>
+
       </Stack>
     </BannerWrapper>
   );
